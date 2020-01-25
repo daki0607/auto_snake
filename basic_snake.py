@@ -9,6 +9,7 @@ class Snake(object):
     def __init__(self):
         self.x = 5
         self.y = 5
+        self.move = self.move_down
 
     def move_right(self):
         self.x += 1
@@ -49,6 +50,9 @@ class Arena(object):
             self._imageSurface, (self.snakes.x*scale, self.snakes.y*scale))
         pygame.display.flip()
 
+    def _update(self):
+        self.snakes.move()
+
     def _stop(self):
         sys.exit()
 
@@ -61,17 +65,18 @@ class Arena(object):
             keys = pygame.key.get_pressed()
 
             if (keys[K_RIGHT]):
-                self.snakes.move_right()
+                self.snakes.move = self.snakes.move_right
             if(keys[K_LEFT]):
-                self.snakes.move_left()
+                self.snakes.move = self.snakes.move_left
             if (keys[K_UP]):
-                self.snakes.move_up()
+                self.snakes.move = self.snakes.move_up
             if (keys[K_DOWN]):
-                self.snakes.move_down()
+                self.snakes.move = self.snakes.move_down
 
             if (keys[K_ESCAPE]):
                 self._running = False
 
+            self._update()
             self._render()
         self._stop()
 
