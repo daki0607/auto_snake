@@ -53,6 +53,16 @@ class Arena(object):
     def _update(self):
         self.snakes.move()
 
+    def _collision_check(self):
+        """
+        Checks for collisions with walls, itself, and food.
+        """
+        if (self.snakes.x > self.width-1
+                or self.snakes.x < 0
+                or self.snakes.y > self.height-1
+                or self.snakes.y < 0):
+            self._running = False
+
     def _stop(self):
         sys.exit()
 
@@ -77,6 +87,7 @@ class Arena(object):
                 self._running = False
 
             self._update()
+            self._collision_check()
             self._render()
         self._stop()
 
