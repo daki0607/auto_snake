@@ -13,6 +13,7 @@ class Snake(object):
         # Reference to a function so the snake moves in the same direction
         self.move = self.move_down
         self.body = [(self.x, self.y)]
+        self.length = 1
 
     def move_right(self):
         self.x += 1
@@ -34,6 +35,7 @@ class Snake(object):
     def eat(self):
         """ Add another segment to the body. """
         self.body.append((self.x, self.y))
+        self.length += 1
 
 
 class Food(object):
@@ -59,19 +61,24 @@ class Arena(object):
         self.windowHeight = self.height*scale
         self._displaySurface = None
         self._snakeImageSurface = None
+        self._snakeHeadImageSurface = None
         self._foodImageSurface = None
         self._clock = None
 
     def _init(self):
         """ Initialize pygame elements. """
+        self._running = True
+
         pygame.init()
         self._clock = pygame.time.Clock()
         self._displaySurface = pygame.display.set_mode(
             (self.windowWidth, self.windowHeight), pygame.HWSURFACE)
-        self._running = True
+
         self._snakeImageSurface = pygame.image.load(
             "snake_segment.png").convert()
         self._foodImageSurface = pygame.image.load("food.png").convert()
+        self._snakeHeadImageSurface = pygame.image.load(
+            "snake_head.png").convert()
 
     def _render(self):
         """ Redraws the body of the snake and the food. """
@@ -79,9 +86,13 @@ class Arena(object):
         self._displaySurface.blit(
             self._foodImageSurface, (self.food.x*scale, self.food.y*scale))
 
-        for x, y in self.snake.body:
+        for x, y in self.snake.body[1:]:
             self._displaySurface.blit(
                 self._snakeImageSurface, (x*scale, y*scale))
+
+        self._displaySurface.blit(
+            self._snakeHeadImageSurface,
+            (self.snake.x*scale, self.snake.y*scale))
 
         pygame.display.flip()
 
@@ -100,8 +111,13 @@ class Arena(object):
                 or self.snake.y < 0):
             self._running = False
 
+        for i in range(1, self.snake.length):
+            if (self.snake.body[0] == self.snake.body[i]):
+                self._running = False
+
         if (self.snake.x == self.food.x and self.snake.y == self.food.y):
             self.snake.eat()
+            self.food = Food.spawn_food(self.width-1, self.height-1)
 
     def _stop(self):
         sys.exit()
