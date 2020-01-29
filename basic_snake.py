@@ -10,6 +10,7 @@ class Snake(object):
     def __init__(self):
         self.x = 5
         self.y = 5
+        # Reference to a function so the snake moves in the same direction
         self.move = self.move_down
         self.body = [(self.x, self.y)]
 
@@ -31,6 +32,7 @@ class Snake(object):
         self.body.pop()
 
     def eat(self):
+        """ Add another segment to the body. """
         self.body.append((self.x, self.y))
 
 
@@ -61,6 +63,7 @@ class Arena(object):
         self._clock = None
 
     def _init(self):
+        """ Initialize pygame elements. """
         pygame.init()
         self._clock = pygame.time.Clock()
         self._displaySurface = pygame.display.set_mode(
@@ -71,6 +74,7 @@ class Arena(object):
         self._foodImageSurface = pygame.image.load("food.png").convert()
 
     def _render(self):
+        """ Redraws the body of the snake and the food. """
         self._displaySurface.fill((0, 0, 0))
         self._displaySurface.blit(
             self._foodImageSurface, (self.food.x*scale, self.food.y*scale))
@@ -82,6 +86,7 @@ class Arena(object):
         pygame.display.flip()
 
     def _update(self):
+        """ Move the snake and its body. """
         self.snake.move()
         self.snake.update_body()
 
@@ -102,6 +107,7 @@ class Arena(object):
         sys.exit()
 
     def execute(self):
+        """ Main loop. """
         self._init()
 
         while (self._running):
